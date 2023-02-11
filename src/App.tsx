@@ -4,7 +4,10 @@ import './App.css';
 
 import {generateMnemonic, mnemonicToEntropy} from 'ethereum-cryptography/bip39'
 import { wordlist } from "ethereum-cryptography/bip39/wordlists/english"
+import { HDKey } from "ethereum-cryptography/hdkey"
 
+export type Mnemonic = string
+export type Entropy = Uint8Array
 
 function App() {
 
@@ -14,8 +17,16 @@ function App() {
     return {mnemonic, entropy}
   }
 
+  const createHDRootKey = (entropy: Entropy) => {
+    return HDKey.fromMasterSeed(entropy)
+  }
+
   useEffect(()=>{
-    console.log(createMnemonic(256))
+    const {mnemonic, entropy} = createMnemonic(256)
+    const hdRootKey = createHDRootKey(entropy)
+    console.log(mnemonic)
+    console.log(entropy)
+    console.log(hdRootKey)
   },[])
 
   return (
