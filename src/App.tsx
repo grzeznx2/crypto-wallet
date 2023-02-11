@@ -6,11 +6,12 @@ import {generateMnemonic, mnemonicToEntropy} from 'ethereum-cryptography/bip39'
 import { wordlist } from "ethereum-cryptography/bip39/wordlists/english"
 import { HDKey } from "ethereum-cryptography/hdkey"
 import { getPublicKey } from "ethereum-cryptography/secp256k1"
-
+import  { keccak256 } from "ethereum-cryptography/keccak"
 
 export type Mnemonic = string
 export type Entropy = Uint8Array
 export type PrivateKey = Uint8Array
+export type PublicKey = Uint8Array
 
 function App() {
 
@@ -32,6 +33,10 @@ function App() {
     return getPublicKey(privateKey)
   }
 
+  const createAddress = (publicKey: PublicKey) => {
+    return keccak256(publicKey).slice(-20)
+  }
+
   useEffect(()=>{
     const {mnemonic, entropy} = createMnemonic(256)
     const hdRootKey = createHDRootKey(entropy)
@@ -42,7 +47,9 @@ function App() {
     console.log(account0PrivateKey)
     if(account0PrivateKey){
       const account0PublicKey = createPublicKey(account0PrivateKey)
+      const account0Address = createAddress(account0PublicKey)
       console.log(account0PublicKey)
+      console.log(account0Address)
     }
   },[])
 
