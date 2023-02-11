@@ -5,9 +5,12 @@ import './App.css';
 import {generateMnemonic, mnemonicToEntropy} from 'ethereum-cryptography/bip39'
 import { wordlist } from "ethereum-cryptography/bip39/wordlists/english"
 import { HDKey } from "ethereum-cryptography/hdkey"
+import { getPublicKey } from "ethereum-cryptography/secp256k1"
+
 
 export type Mnemonic = string
 export type Entropy = Uint8Array
+export type PrivateKey = Uint8Array
 
 function App() {
 
@@ -21,12 +24,26 @@ function App() {
     return HDKey.fromMasterSeed(entropy)
   }
 
+  const createPrivateKey = (hdRootKey: HDKey, accountIndex: number) => {
+    return hdRootKey.deriveChild(accountIndex).privateKey
+  }
+
+  const createPublicKey = (privateKey: PrivateKey) => {
+    return getPublicKey(privateKey)
+  }
+
   useEffect(()=>{
     const {mnemonic, entropy} = createMnemonic(256)
     const hdRootKey = createHDRootKey(entropy)
+    const account0PrivateKey = createPrivateKey(hdRootKey, 0)
     console.log(mnemonic)
     console.log(entropy)
     console.log(hdRootKey)
+    console.log(account0PrivateKey)
+    if(account0PrivateKey){
+      const account0PublicKey = createPublicKey(account0PrivateKey)
+      console.log(account0PublicKey)
+    }
   },[])
 
   return (
