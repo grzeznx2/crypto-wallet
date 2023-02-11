@@ -6,7 +6,9 @@ import {generateMnemonic, mnemonicToEntropy} from 'ethereum-cryptography/bip39'
 import { wordlist } from "ethereum-cryptography/bip39/wordlists/english"
 import { HDKey } from "ethereum-cryptography/hdkey"
 import { getPublicKey } from "ethereum-cryptography/secp256k1"
-import  { keccak256 } from "ethereum-cryptography/keccak"
+import { keccak256 } from "ethereum-cryptography/keccak"
+import { bytesToHex } from "ethereum-cryptography/utils"
+
 
 export type Mnemonic = string
 export type Entropy = Uint8Array
@@ -37,8 +39,8 @@ function App() {
     return keccak256(publicKey).slice(-20)
   }
 
-  useEffect(()=>{
-    const {mnemonic, entropy} = createMnemonic(256)
+  const createWallet = (strength: number) => {
+    const {mnemonic, entropy} = createMnemonic(strength)
     const hdRootKey = createHDRootKey(entropy)
     const account0PrivateKey = createPrivateKey(hdRootKey, 0)
     console.log(mnemonic)
@@ -50,7 +52,13 @@ function App() {
       const account0Address = createAddress(account0PublicKey)
       console.log(account0PublicKey)
       console.log(account0Address)
+      console.log(`0x${bytesToHex(account0Address)}`)
+      return account0Address
     }
+  }
+
+  useEffect(()=>{
+    createWallet(256)
   },[])
 
   return (
