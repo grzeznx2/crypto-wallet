@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import { Alchemy, Network, Wallet, Utils } from 'alchemy-sdk'
 import {generateMnemonic, mnemonicToEntropy} from 'ethereum-cryptography/bip39'
 import { wordlist } from "ethereum-cryptography/bip39/wordlists/english"
 import { HDKey } from "ethereum-cryptography/hdkey"
@@ -53,6 +54,11 @@ function App() {
       console.log(account0PublicKey)
       console.log(account0Address)
       console.log(`0x${bytesToHex(account0Address)}`)
+
+      const wallet = new Wallet(account0PrivateKey);
+
+      console.log('ALCHEMY_WALLET_ADDRESS', wallet.address)
+
       return account0Address
     }
   }
